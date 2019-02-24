@@ -5,7 +5,8 @@ class UsersController < ApplicationController
     ensure_password_confirmation_is_present
     user = User.create!(create_user_params)
     token = Auth::AuthenticateUser.new(user.email, user.password).call
-    json_auth_response(token: token, message: 'Successfully signed up')
+    user.send_activation_email
+    json_auth_response(token: token, message: 'Successfully signed up.')
   rescue => error
     json_error_response(message: error.message)
   end
