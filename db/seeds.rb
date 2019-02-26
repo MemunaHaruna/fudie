@@ -9,9 +9,9 @@
 User.create!(first_name:  "fudie",
   last_name:  "admin",
   username: "fudie-admin",
-  email: "memunaharuna16@gmail.com",
-  password: "foobar",
-  password_confirmation: "foobar",
+  email: ENV['ADMIN_EMAIL'],
+  password: ENV['ADMIN_PASSWORD'],
+  password_confirmation: ENV['ADMIN_PASSWORD'],
   role: 1,
-  activated: true,
-  activated_at: Time.zone.now)
+  account_activated: true,
+  account_activated_at: Time.zone.now)
