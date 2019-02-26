@@ -6,7 +6,7 @@ module ExceptionHandler
   class InvalidToken < StandardError; end
   class PasswordMismatch < StandardError; end
   class UnauthorizedUser < StandardError; end
-
+  class EmailNotSent < StandardError; end
 
   included do
     rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
@@ -17,6 +17,7 @@ module ExceptionHandler
     rescue_from ExceptionHandler::PasswordMismatch,
                 with: :password_not_matching_confirmation
     rescue_from ExceptionHandler::UnauthorizedUser, with: :unauthorized_request
+    rescue_from ExceptionHandler::EmailNotSent, with: :email_not_sent
   end
 
   def record_invalid(error)
@@ -36,6 +37,10 @@ module ExceptionHandler
   end
 
   def password_not_matching_confirmation(error)
+    json_error_response(status: :unprocessable_entity, message: error.message)
+  end
+
+  def email_not_sent(error)
     json_error_response(status: :unprocessable_entity, message: error.message)
   end
 end

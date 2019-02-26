@@ -3,7 +3,7 @@ class AccountActivationsController < ApplicationController
 
   def edit
     user = User.find_by(email: params[:email])
-    if user && !user.activated? && user.authenticated?(:activation, params[:id])
+    if user && !user.account_activated? && user.authenticated?(:account_activation, params[:id])
       user.activate
       json_auth_response(message: 'Successfully confirmed account.')
     else

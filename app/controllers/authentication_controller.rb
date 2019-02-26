@@ -3,7 +3,7 @@ class AuthenticationController < ApplicationController
 
   def signin
     user = User.find_by(email: auth_params[:email])
-    if !user.activated?
+    if !user.account_activated?
       message = 'Account unactivated. Check your email for activation link'
       raise ExceptionHandler::AuthenticationError, message
     end
