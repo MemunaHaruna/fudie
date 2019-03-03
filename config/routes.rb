@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :categories
   resources :bookmarks
   resources :votes
   get 'posts/drafts', to: 'posts#drafts'

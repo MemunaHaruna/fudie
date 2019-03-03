@@ -13,6 +13,9 @@ class Post < ApplicationRecord
 
   belongs_to :parent, class_name: "Post", optional: true
   has_many :votes, dependent: :destroy
+  has_many :posts_categories
+  has_many :categories, through: :posts_categories, dependent: :destroy
+
 
   scope :posts_only, -> { where(parent_id: nil) } # posts only, not comments
 
@@ -27,4 +30,26 @@ class Post < ApplicationRecord
       end
     end
   end
+
+  def save_categories(categories)
+    store(categories)
+  rescue => error
+    raise ActiveRecord::RecordInvalid, error.message
+  end
+
+  def update_categories(categories)
+    PostsCategory.where(post_id: self.id).delete_all
+    store(categories)
+  rescue => error
+    raise ActiveRecord::RecordInvalid, error.message
+  end
+
+  private
+    def store(categories)
+      categories.each {|id| save_post_category(id) }
+    end
+
+    def save_post_category(id)
+      PostsCategory.create!(post_id: self.id, category_id: id)
+    end
 end

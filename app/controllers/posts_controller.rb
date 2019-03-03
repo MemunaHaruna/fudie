@@ -35,6 +35,7 @@ class PostsController < ApplicationController
     # logic for updating a post's depth
     @post.set_depth
     if @post.save
+      @post.save_categories(params[:category_ids]) if params[:category_ids]
       json_response(status: :created, data: @post, message: 'Successfully created new post')
     else
       json_error_response(errors: @post.errors)
@@ -46,7 +47,9 @@ class PostsController < ApplicationController
       raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'
     end
 
+
     if @post.update(post_update_params)
+      @post.update_categories(params[:category_ids]) if params[:category_ids]
       json_response(object: @post, message: 'Successfully created new post')
     else
       json_error_response(errors: @post.errors)

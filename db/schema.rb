@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190303181057) do
+ActiveRecord::Schema.define(version: 20190303194425) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,12 @@ ActiveRecord::Schema.define(version: 20190303181057) do
     t.index ["user_id"], name: "index_bookmarks_on_user_id"
   end
 
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "posts", force: :cascade do |t|
     t.string "title", null: false
     t.text "body", null: false
@@ -35,6 +41,15 @@ ActiveRecord::Schema.define(version: 20190303181057) do
     t.bigint "parent_id"
     t.index ["parent_id"], name: "index_posts_on_parent_id"
     t.index ["user_id"], name: "index_posts_on_user_id"
+  end
+
+  create_table "posts_categories", force: :cascade do |t|
+    t.bigint "post_id"
+    t.bigint "category_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_posts_categories_on_category_id"
+    t.index ["post_id"], name: "index_posts_categories_on_post_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -54,6 +69,15 @@ ActiveRecord::Schema.define(version: 20190303181057) do
     t.datetime "password_reset_sent_at"
   end
 
+  create_table "users_categories", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "category_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_users_categories_on_category_id"
+    t.index ["user_id"], name: "index_users_categories_on_user_id"
+  end
+
   create_table "votes", force: :cascade do |t|
     t.integer "vote_type"
     t.bigint "post_id"
@@ -67,6 +91,10 @@ ActiveRecord::Schema.define(version: 20190303181057) do
   add_foreign_key "bookmarks", "posts"
   add_foreign_key "bookmarks", "users"
   add_foreign_key "posts", "users"
+  add_foreign_key "posts_categories", "categories"
+  add_foreign_key "posts_categories", "posts"
+  add_foreign_key "users_categories", "categories"
+  add_foreign_key "users_categories", "users"
   add_foreign_key "votes", "posts"
   add_foreign_key "votes", "users"
 end
