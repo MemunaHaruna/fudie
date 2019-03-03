@@ -2,28 +2,38 @@ class PostsController < ApplicationController
   before_action :set_post, only: [:show, :update, :destroy]
 
   def index
-    posts = Post.published
+    posts = Post.posts_only.published
+    json_response(status: :ok, data: posts)
+  end
+
+  def public_posts_per_user
+    posts = Post.where(user_id: params[:user_id]).posts_only.published
     json_response(status: :ok, data: posts)
   end
 
   def drafts
-    posts = current_user.posts.draft
+    posts = current_user.posts.posts_only.draft
     json_response(status: :ok, data: posts)
   end
 
-  def private
-    @posts = current_user.posts.private
+  def hidden
+    posts = current_user.posts.posts_only.hidden
     json_response(status: :ok, data: posts)
   end
 
   def show
-    json_response(status: :ok, data: @post)
+    if @post.published? || @post.user_id == current_user.id
+      json_response(status: :ok, data: @post)
+    else
+      raise ExceptionHandler::UnauthorizedUser, 'You are not authorised to view this post'
+    end
   end
 
   def create
     @post = Post.new(post_params)
-    # logic for updating a post's depth and parent_id
 
+    # logic for updating a post's depth
+    @post.set_depth
     if @post.save
       json_response(status: :created, data: @post, message: 'Successfully created new post')
     else
@@ -32,6 +42,10 @@ class PostsController < ApplicationController
   end
 
   def update
+    if @post.user_id != current_user.id
+      raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'
+    end
+
     if @post.update(post_update_params)
       json_response(status: :ok, object: @post, message: 'Successfully created new post')
     else
@@ -40,6 +54,10 @@ class PostsController < ApplicationController
   end
 
   def destroy
+    if @post.user_id != current_user.id
+      raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'
+    end
+
     @post.destroy
     json_response(message: 'Successfully deleted Post')
   end
@@ -50,7 +68,7 @@ class PostsController < ApplicationController
     end
 
     def post_params
-      params.permit(:title, :body, :user_id, :state)
+      params.permit(:title, :body, :user_id, :state, :parent_id)
     end
 
     def post_update_params

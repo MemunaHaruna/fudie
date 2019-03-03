@@ -1,9 +1,10 @@
 Rails.application.routes.draw do
 
-  resources :posts
   get 'posts/drafts', to: 'posts#drafts'
-  get 'posts/private', to: 'posts#private'
+  get 'posts/hidden', to: 'posts#hidden'
+  get 'posts/:user_id/public', to: 'posts#public_posts_per_user'
 
+  resources :posts
   post 'signup', to: 'users#create'
   post 'signin', to: 'authentication#signin'
 

@@ -7,7 +7,8 @@ module Response
     render json: {token: token, message: message}, status: status
   end
 
-  def json_response(message: 'Success', status: :ok, data: nil)
-    render json: {message: message, data: data}, status: status
+  def json_response(message: 'Success', status: :ok, data: nil, show_children: true)
+    render json: data, show_children: show_children,
+             meta: message, meta_key: :message, status: status
   end
 end
