@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
 
+  resources :posts
+  get 'posts/drafts', to: 'posts#drafts'
+  get 'posts/private', to: 'posts#private'
+
   post 'signup', to: 'users#create'
   post 'signin', to: 'authentication#signin'
 

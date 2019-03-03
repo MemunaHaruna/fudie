@@ -17,6 +17,8 @@ class User < ApplicationRecord
   before_create :create_activation_digest
   before_save :downcase_email
 
+  has_many :posts, dependent: :destroy
+
   def authenticated?(attribute, token)
     digest = send("#{attribute}_digest")
     return false if digest.nil?
