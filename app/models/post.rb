@@ -12,6 +12,7 @@ class Post < ApplicationRecord
                       dependent: :destroy
 
   belongs_to :parent, class_name: "Post", optional: true
+  has_many :votes, dependent: :destroy
 
   scope :posts_only, -> { where(parent_id: nil) } # posts only, not comments
 

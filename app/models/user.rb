@@ -18,6 +18,7 @@ class User < ApplicationRecord
   before_save :downcase_email
 
   has_many :posts, dependent: :destroy
+  has_many :votes, dependent: :destroy
 
   def authenticated?(attribute, token)
     digest = send("#{attribute}_digest")

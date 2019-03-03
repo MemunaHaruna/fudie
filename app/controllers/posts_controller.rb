@@ -47,7 +47,7 @@ class PostsController < ApplicationController
     end
 
     if @post.update(post_update_params)
-      json_response(status: :ok, object: @post, message: 'Successfully created new post')
+      json_response(object: @post, message: 'Successfully created new post')
     else
       json_error_response(errors: @post.errors)
     end

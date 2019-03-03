@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190303124432) do
+ActiveRecord::Schema.define(version: 20190303181057) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "bookmarks", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "post_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_bookmarks_on_post_id"
+    t.index ["user_id"], name: "index_bookmarks_on_user_id"
+  end
 
   create_table "posts", force: :cascade do |t|
     t.string "title", null: false
@@ -45,5 +54,19 @@ ActiveRecord::Schema.define(version: 20190303124432) do
     t.datetime "password_reset_sent_at"
   end
 
+  create_table "votes", force: :cascade do |t|
+    t.integer "vote_type"
+    t.bigint "post_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_votes_on_post_id"
+    t.index ["user_id"], name: "index_votes_on_user_id"
+  end
+
+  add_foreign_key "bookmarks", "posts"
+  add_foreign_key "bookmarks", "users"
   add_foreign_key "posts", "users"
+  add_foreign_key "votes", "posts"
+  add_foreign_key "votes", "users"
 end
