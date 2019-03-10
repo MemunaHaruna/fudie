@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :thread_followings, only: [:create, :destroy]
   resources :categories
   resources :bookmarks
   resources :votes

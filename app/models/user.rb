@@ -19,6 +19,7 @@ class User < ApplicationRecord
 
   has_many :posts, dependent: :destroy
   has_many :votes, dependent: :destroy
+  has_many :thread_followings, dependent: :destroy
 
   has_many :users_categories
   has_many :categories, through: :users_categories, dependent: :destroy
