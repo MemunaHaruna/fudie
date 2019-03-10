@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190310223424) do
+ActiveRecord::Schema.define(version: 20190310225926) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,6 +85,8 @@ ActiveRecord::Schema.define(version: 20190310223424) do
     t.datetime "account_activated_at"
     t.string "password_reset_digest"
     t.datetime "password_reset_sent_at"
+    t.index ["email"], name: "index_users_on_email"
+    t.index ["username"], name: "index_users_on_username"
   end
 
   create_table "votes", force: :cascade do |t|
