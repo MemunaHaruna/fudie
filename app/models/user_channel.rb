@@ -1,4 +1,4 @@
-class UsersCategory < ApplicationRecord
+class UserChannel < ApplicationRecord
   belongs_to :user
   belongs_to :category
 end
