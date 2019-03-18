@@ -83,6 +83,8 @@ GEM
     factory_bot_rails (4.8.2)
       factory_bot (~> 4.8.2)
       railties (>= 3.0.0)
+    faker (1.9.1)
+      i18n (>= 0.7)
     ffi (1.10.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
@@ -172,6 +174,8 @@ GEM
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
     ruby_dep (1.5.0)
+    shoulda-matchers (3.1.2)
+      activesupport (>= 4.0.0)
     spring (2.0.2)
       activesupport (>= 4.2)
     spring-watcher-listen (2.0.1)
@@ -210,6 +214,7 @@ DEPENDENCIES
   database_cleaner
   dotenv-rails
   factory_bot_rails
+  faker
   jwt
   listen (>= 3.0.5, < 3.2)
   pg (>= 0.18, < 2.0)
@@ -217,9 +222,10 @@ DEPENDENCIES
   puma (~> 3.7)
   rails (~> 5.1.6)
   rspec-rails (~> 3.8)
+  shoulda-matchers (~> 3.1)
   spring
   spring-watcher-listen (~> 2.0.0)
   tzinfo-data
 
 BUNDLED WITH
-   2.0.1
+   1.15.3
