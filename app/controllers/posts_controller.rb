@@ -36,7 +36,7 @@ class PostsController < ApplicationController
     @post.set_depth
     if @post.save
       @post.save_categories(params[:category_ids]) if params[:category_ids]
-      json_response(status: :created, data: @post, message: 'Successfully created new post')
+      json_response(status: :created, data: @post, message: 'Post created successfully')
     else
       json_error_response(errors: @post.errors)
     end
@@ -50,7 +50,7 @@ class PostsController < ApplicationController
 
     if @post.update(post_update_params)
       @post.update_categories(params[:category_ids]) if params[:category_ids]
-      json_response(object: @post, message: 'Successfully created new post')
+      json_response(data: @post, message: 'Post updated successfully')
     else
       json_error_response(errors: @post.errors)
     end
@@ -62,7 +62,7 @@ class PostsController < ApplicationController
     end
 
     @post.destroy
-    json_response(message: 'Successfully deleted Post')
+    json_response(message: 'Post deleted successfully', status: :no_content)
   end
 
   private

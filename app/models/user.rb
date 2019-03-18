@@ -12,6 +12,7 @@ class User < ApplicationRecord
                       uniqueness: { case_sensitive: false }
 
   validates :password, length: {:within => 6..40}
+  validates_presence_of :password_digest
 
   enum role: %w[member admin]
   before_create :create_activation_digest
