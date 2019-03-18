@@ -6,7 +6,7 @@ class UsersController < ApplicationController
     user = User.create!(create_user_params)
     token = Auth::AuthenticateUser.new(user.email, user.password).call
     user.send_activation_email
-    json_auth_response(token: token, message: 'Successfully signed up.')
+    json_auth_response(token: token, message: 'Account created successfully', status: :created)
   rescue => error
     json_error_response(message: error.message)
   end
