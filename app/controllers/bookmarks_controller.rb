@@ -3,7 +3,7 @@ class BookmarksController < ApplicationController
   before_action :set_user, only: :index
 
   def index
-    @bookmarks = @user.bookmarks
+    @bookmarks = @user.bookmarks.page(params[:page]).per(params[:per_page] || 10)
     json_response(data: @bookmarks)
   end
 

@@ -16,4 +16,13 @@ class ApplicationController < ActionController::API
       raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'
     end
   end
+
+  def pagination_dict(collection)
+    {
+      current_page: collection.current_page,
+      next_page: collection.next_page,
+      prev_page: collection.prev_page,
+      total_pages: collection.total_pages
+    }
+  end
 end
