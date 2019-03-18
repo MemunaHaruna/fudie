@@ -3,7 +3,7 @@ class CategoriesController < ApplicationController
   before_action :set_category, only: [:show, :update, :destroy]
 
   def index
-    @categories = Category.all
+    @categories = Category.all.page(params[:page]).per(params[:per_page] || 10)
     json_response(data: @categories)
   end
 

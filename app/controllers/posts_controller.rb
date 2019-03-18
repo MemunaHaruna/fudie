@@ -3,21 +3,25 @@ class PostsController < ApplicationController
 
   def index
     posts = Post.posts_only.published
+    posts = posts.page(params[:page]).per(params[:per_page] || 10)
     json_response(status: :ok, data: posts)
   end
 
   def public_posts_per_user
     posts = Post.where(user_id: params[:user_id]).posts_only.published
+    posts = posts.page(params[:page]).per(params[:per_page] || 10)
     json_response(status: :ok, data: posts)
   end
 
   def drafts
     posts = current_user.posts.posts_only.draft
+    posts = posts.page(params[:page]).per(params[:per_page] || 10)
     json_response(status: :ok, data: posts)
   end
 
   def hidden
     posts = current_user.posts.posts_only.hidden
+    posts = posts.page(params[:page]).per(params[:per_page] || 10)
     json_response(status: :ok, data: posts)
   end
 

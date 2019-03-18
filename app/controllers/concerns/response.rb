@@ -8,6 +8,13 @@ module Response
   end
 
   def json_response(message: 'Success', status: :ok, data: nil, show_children: true)
+    if data.respond_to? :size
+      return render json: data, show_children: show_children,
+             meta: {
+               message: message,
+               pagination: pagination_dict(data)
+             }, status: status
+    end
     render json: data, show_children: show_children,
              meta: message, meta_key: :message, status: status
   end
