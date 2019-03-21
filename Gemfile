@@ -23,6 +23,8 @@ gem 'jwt'
 gem 'active_model_serializers', '~> 0.10.0'
 gem 'kaminari'
 
+gem 'simplecov', require: false, group: :test
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
