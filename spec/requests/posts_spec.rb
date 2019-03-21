@@ -74,6 +74,14 @@ RSpec.describe "Post API", type: :request do
         expect(json[:posts].first[:state]).to eq new_post[:state]
         expect(response).to have_http_status(200)
       end
+
+      it "returns the right pagination metadata" do
+        get "/posts", headers: headers
+        expect(json[:meta][:pagination][:current_page]).to eq 1
+        expect(json[:meta][:pagination][:total_records]).to eq 1
+        expect(json[:meta][:pagination][:next_page]).to eq nil
+        expect(json[:meta][:pagination][:prev_page]).to eq nil
+      end
     end
   end
 
