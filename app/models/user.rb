@@ -20,7 +20,8 @@ class User < ApplicationRecord
 
   has_many :posts, dependent: :destroy
   has_many :votes, dependent: :destroy
-  has_many :thread_followings, dependent: :destroy
+  has_many :bookmarks, dependent: :destroy
+  has_many :thread_followings, class_name: 'ThreadFollowing', dependent: :destroy
 
   has_many :user_channels
   has_many :categories, through: :user_channels, dependent: :destroy
