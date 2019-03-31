@@ -13,7 +13,8 @@ class Post < ApplicationRecord
 
   belongs_to :parent, class_name: "Post", optional: true
   has_many :votes, dependent: :destroy
-  has_many :thread_followings, dependent: :destroy
+  has_many :thread_followings, class_name: 'ThreadFollowing', dependent: :destroy
+  has_many :bookmarks, dependent: :destroy
 
   has_many :posts_categories
   has_many :categories, through: :posts_categories, dependent: :destroy
