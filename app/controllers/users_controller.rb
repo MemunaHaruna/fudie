@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   skip_before_action :authorize_api_request, only: :create
-  before_action :set_user, only: :show
+  before_action :set_user, only: [:show, :update]
+  before_action :get_categories, only: :update
 
   def show
     json_response(data: @user)
@@ -16,6 +17,21 @@ class UsersController < ApplicationController
     json_error_response(message: error.message)
   end
 
+  def update
+    if @user.id != current_user.id
+      raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'
+    end
+
+    if @user.update(update_user_params)
+      @user.avatar.attach(params[:avatar]) if params[:avatar]
+      @user.categories << @categories if @categories
+
+      json_response(data: @user, message: 'User updated successfully')
+    else
+      json_error_response(errors: @user.errors)
+    end
+  end
+
   private
 
   def create_user_params
@@ -26,6 +42,15 @@ class UsersController < ApplicationController
     if !create_user_params[:password_confirmation]
       raise ExceptionHandler::PasswordMismatch, "Password and Password Confirmation don't match"
     end
+  end
+
+  def update_user_params
+    params.permit(:first_name, :last_name, :bio)
+  end
+
+  def get_categories
+    ids = JSON.parse(params[:category_ids]) if params[:category_ids]
+    @categories = Category.where(id: ids)
   end
 
   def set_user

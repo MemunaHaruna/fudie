@@ -15,7 +15,6 @@ RSpec.describe "Users API", type: :request do
   let!(:member_post) { create(:post, user: user)}
   let!(:thread_following2) { create(:thread_following, user: user, post: member_post) }
 
-
   describe "POST /signup" do
     context "when valid request" do
       before { post "/signup", params: valid_attributes.to_json, headers: headers }
@@ -103,6 +102,39 @@ RSpec.describe "Users API", type: :request do
             expect(json[:user][:thread_followings]).to eq nil
           end
         end
+      end
+    end
+  end
+
+  describe "PUT /update" do
+    update_params = {first_name: 'marie', last_name: 'kondo', category_ids: "[2, 3]", bio: 'hello'}
+
+    context "when current user is updating their own profile" do
+      before do
+        create_list(:category, 2)
+
+        put "/users/#{user.id}", headers: user_header , params: update_params.to_json
+      end
+
+      it "updates successfully" do
+        expect(json[:user][:id]).to eq user.id
+        expect(json[:user][:email]).to eq user.email
+        expect(json[:user][:bio]).to eq update_params[:bio]
+        expect(json[:user][:first_name]).to eq update_params[:first_name]
+        expect(json[:user][:last_name]).to eq update_params[:last_name]
+        expect(json[:user][:categories].count).to eq 2
+        expect(json[:user][:categories].first[:id]).to eq 2
+        expect(json[:user][:categories].last[:id]).to eq 3
+
+      end
+    end
+
+    context "when current user attempts to update another user's profile" do
+      before { put "/users/#{admin_user.id}", headers: user_header, params: update_params.to_json}
+
+      it "returns an error" do
+        expect(json[:message]).to eq "You are not authorized to perform this action"
+        expect(response).to have_http_status(403)
       end
     end
   end
