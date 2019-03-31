@@ -1,5 +1,5 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :first_name, :last_name, :bio, :username, :avatar,
+  attributes :id, :first_name, :last_name, :bio, :username,
               :created_at
 
   has_many :posts
@@ -31,6 +31,13 @@ class UserSerializer < ActiveModel::Serializer
   def thread_followings
     object.thread_followings if is_current_user?
   end
+
+  # TODO: ensure the file is returned appropriately
+  attribute :avatar do
+    object.avatar.filename if object.avatar.attached?
+  end
+
+  private
 
   def is_current_user?(user = object)
     user == current_user
