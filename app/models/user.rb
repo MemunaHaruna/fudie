@@ -11,7 +11,9 @@ class User < ApplicationRecord
   validates :username, presence: true, length: { maximum: 255 },
                       uniqueness: { case_sensitive: false }
 
-  validates :password, length: {:within => 6..40}
+  # TODO: prevent this validation from running when a password isn't passed in params
+  # validates :password, length: {:within => 6..40}
+
   validates_presence_of :password_digest
 
   enum role: %w[member admin]
@@ -25,6 +27,8 @@ class User < ApplicationRecord
 
   has_many :user_channels
   has_many :categories, through: :user_channels, dependent: :destroy
+
+  has_one_attached :avatar
 
   def authenticated?(attribute, token)
     digest = send("#{attribute}_digest")
