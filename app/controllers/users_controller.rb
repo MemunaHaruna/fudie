@@ -1,5 +1,10 @@
 class UsersController < ApplicationController
   skip_before_action :authorize_api_request, only: :create
+  before_action :set_user, only: :show
+
+  def show
+    json_response(data: @user)
+  end
 
   def create
     ensure_password_confirmation_is_present
@@ -21,5 +26,9 @@ class UsersController < ApplicationController
     if !create_user_params[:password_confirmation]
       raise ExceptionHandler::PasswordMismatch, "Password and Password Confirmation don't match"
     end
+  end
+
+  def set_user
+    @user ||= User.find(params[:id])
   end
 end
