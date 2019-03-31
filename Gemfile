@@ -7,7 +7,7 @@ end
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.1.6'
+gem 'rails', '~> 5.2.0'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
@@ -25,6 +25,10 @@ gem 'kaminari'
 
 gem 'simplecov', require: false, group: :test
 
+
+# for railties app_generator_test
+# gem "bootsnap", ">= 1.1.0", require: false
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
@@ -37,11 +41,6 @@ group :development, :test do
   gem 'pry-rails'
   gem 'dotenv-rails'
   gem 'rspec-rails', '~> 3.8'
-  gem 'factory_bot_rails'
-  gem 'capybara'
-  gem 'database_cleaner'
-  gem 'faker'
-  gem 'shoulda-matchers', '~> 3.1'
 end
 
 group :development do
@@ -49,6 +48,14 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+end
+
+group :test do
+  gem 'factory_bot_rails'
+  gem 'capybara'
+  gem 'database_cleaner'
+  gem 'faker'
+  gem 'shoulda-matchers', '~> 3.1'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
