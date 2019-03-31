@@ -9,6 +9,12 @@ RSpec.describe "Users API", type: :request do
   let(:valid_attributes) do
     attributes_for(:user, password_confirmation: user.password)
   end
+  let!(:admin_post) { create(:post, user: admin_user)}
+  let!(:thread_following) { create(:thread_following, user: admin_user, post: admin_post) }
+
+  let!(:member_post) { create(:post, user: user)}
+  let!(:thread_following2) { create(:thread_following, user: user, post: member_post) }
+
 
   describe "POST /signup" do
     context "when valid request" do
@@ -37,6 +43,66 @@ RSpec.describe "Users API", type: :request do
       it "returns failure message" do
         expect(json["message"]).
           to match(/Password and Password Confirmation don't match/)
+      end
+    end
+  end
+
+  describe "GET /show" do
+    context "when the current_user is viewing their own profile" do
+      context "when current user is an admin" do
+        before { get "/users/#{admin_user.id}", headers: admin_header }
+
+        it "returns all user details including email, role and thread_followings" do
+          expect(json[:user][:id]).to eq admin_user.id
+          expect(json[:user][:email]).to eq admin_user.email
+          expect(json[:user][:role]).to eq admin_user.role
+          expect(json[:user][:posts].first[:id]).to eq admin_post.id
+          expect(json[:user][:bio]).to eq admin_user.bio
+          expect(json[:user][:thread_followings].first[:id]).to eq thread_following.id
+          expect(json[:user][:thread_followings].size).to eq 1
+        end
+      end
+
+      context "when current user is a regular member" do
+        before { get "/users/#{user.id}", headers: user_header }
+
+        it "returns all user details without their role" do
+          expect(json[:user][:id]).to eq user.id
+          expect(json[:user][:email]).to eq user.email
+          expect(json[:user][:role]).to eq nil
+          expect(json[:user][:bio]).to eq user.bio
+          expect(json[:user][:thread_followings].first[:id]).to eq thread_following2.id
+          expect(json[:user][:thread_followings].size).to eq 1
+          expect(json[:user][:posts].first[:id]).to eq member_post.id
+        end
+      end
+
+      context "when the current_user is viewing another user's profile" do
+        context "when current user is an admin" do
+          before { get "/users/#{user.id}", headers: admin_header }
+
+          it "returns all user details including email, role but not their thread_followings" do
+            expect(json[:user][:id]).to eq user.id
+            expect(json[:user][:email]).to eq user.email
+            expect(json[:user][:role]).to eq user.role
+            expect(json[:user][:bio]).to eq user.bio
+            expect(json[:user][:posts].first[:id]).to eq member_post.id
+            expect(json[:user][:thread_followings]).to eq nil
+          end
+        end
+
+        context "when current user is an admin" do
+          before { get "/users/#{admin_user.id}", headers: user_header }
+
+          it "returns all user details without their email, role and their thread_followings" do
+            expect(json[:user][:id]).to eq admin_user.id
+            expect(json[:user][:email]).to eq nil
+            expect(json[:user][:role]).to eq nil
+            expect(json[:user][:bio]).to eq admin_user.bio
+            expect(json[:user][:posts].first[:id]).to eq admin_post.id
+            expect(json[:user][:thread_followings]).to eq nil
+          end
+        end
       end
     end
   end
