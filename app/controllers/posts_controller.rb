@@ -2,31 +2,31 @@ class PostsController < ApplicationController
   before_action :set_post, only: [:show, :update, :destroy]
 
   def index
-    posts = Post.posts_only.published
+    posts = Post.posts_only.published.active
     posts = posts.page(params[:page]).per(params[:per_page] || 10)
     json_response(status: :ok, data: posts)
   end
 
   def public_posts_per_user
-    posts = Post.where(user_id: params[:user_id]).posts_only.published
+    posts = Post.where(user_id: params[:user_id]).posts_only.published.active
     posts = posts.page(params[:page]).per(params[:per_page] || 10)
     json_response(status: :ok, data: posts)
   end
 
   def drafts
-    posts = current_user.posts.posts_only.draft
+    posts = current_user.posts.posts_only.draft.active
     posts = posts.page(params[:page]).per(params[:per_page] || 10)
     json_response(status: :ok, data: posts)
   end
 
   def hidden
-    posts = current_user.posts.posts_only.hidden
+    posts = current_user.posts.posts_only.hidden.active
     posts = posts.page(params[:page]).per(params[:per_page] || 10)
     json_response(status: :ok, data: posts)
   end
 
   def show
-    if @post.published? || @post.user_id == current_user.id
+    if ((@post.published? || @post.user_id == current_user.id) && @post.active)
       json_response(status: :ok, data: @post)
     else
       raise ExceptionHandler::UnauthorizedUser, 'You are not authorised to view this post'
@@ -47,10 +47,9 @@ class PostsController < ApplicationController
   end
 
   def update
-    if @post.user_id != current_user.id
+    if ((@post.user_id != current_user.id) && !@post.active)
       raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'
     end
-
 
     if @post.update(post_update_params)
       @post.update_categories(params[:category_ids]) if params[:category_ids]
