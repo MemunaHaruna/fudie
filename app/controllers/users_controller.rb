@@ -1,10 +1,15 @@
 class UsersController < ApplicationController
   skip_before_action :authorize_api_request, only: :create
+  skip_before_action :require_active_member, only: :create
   before_action :set_user, only: [:show, :update]
   before_action :get_categories, only: :update
 
   def show
-    json_response(data: @user)
+    if @user.active
+      json_response(data: @user)
+    else
+      raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'
+    end
   end
 
   def create
@@ -18,7 +23,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    if @user.id != current_user.id
+    if (@user.id != current_user.id || !@user.active)
       raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'
     end
 
