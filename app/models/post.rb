@@ -1,6 +1,4 @@
 class Post < ApplicationRecord
-  belongs_to :user
-
   validates_presence_of :title, :body
   validates_uniqueness_of :title, scope: :user_id
   validates :depth, numericality: { less_than_or_equal_to: 2, only_integer: true }
@@ -10,16 +8,17 @@ class Post < ApplicationRecord
   has_many :comments, class_name: "Post",
                       foreign_key: "parent_id",
                       dependent: :destroy
-
+  belongs_to :user
   belongs_to :parent, class_name: "Post", optional: true
   has_many :votes, dependent: :destroy
   has_many :thread_followings, class_name: 'ThreadFollowing', dependent: :destroy
   has_many :bookmarks, dependent: :destroy
-
   has_many :posts_categories
   has_many :categories, through: :posts_categories, dependent: :destroy
+  has_many :flags, as: :flaggable
 
   scope :posts_only, -> { where(parent_id: nil) } # posts only, not comments
+  scope :active, -> { where(deactivated_by_admin: false) }
 
   def set_depth
     if parent
@@ -44,6 +43,10 @@ class Post < ApplicationRecord
     store(categories)
   rescue => error
     raise ActiveRecord::RecordInvalid, error.message
+  end
+
+  def active
+    deactivated_by_admin == false
   end
 
   private

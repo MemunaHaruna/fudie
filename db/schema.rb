@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_31_144231) do
+ActiveRecord::Schema.define(version: 2019_04_01_115210) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,6 +51,18 @@ ActiveRecord::Schema.define(version: 2019_03_31_144231) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "flags", force: :cascade do |t|
+    t.string "flaggable_type"
+    t.bigint "flaggable_id"
+    t.text "reason", null: false
+    t.boolean "reviewed_by_admin", default: false, null: false
+    t.integer "flagger_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["flaggable_type", "flaggable_id"], name: "index_flags_on_flaggable_type_and_flaggable_id"
+    t.index ["flagger_id"], name: "index_flags_on_flagger_id"
+  end
+
   create_table "posts", force: :cascade do |t|
     t.string "title", null: false
     t.text "body", null: false
@@ -60,6 +72,7 @@ ActiveRecord::Schema.define(version: 2019_03_31_144231) do
     t.datetime "updated_at", null: false
     t.integer "depth", default: 0, null: false
     t.bigint "parent_id"
+    t.boolean "deactivated_by_admin", default: false, null: false
     t.index ["parent_id"], name: "index_posts_on_parent_id"
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
@@ -106,6 +119,7 @@ ActiveRecord::Schema.define(version: 2019_03_31_144231) do
     t.string "password_reset_digest"
     t.datetime "password_reset_sent_at"
     t.text "bio"
+    t.boolean "deactivated_by_admin", default: false, null: false
     t.index ["email"], name: "index_users_on_email"
     t.index ["username"], name: "index_users_on_username"
   end
