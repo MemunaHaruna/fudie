@@ -73,6 +73,21 @@ class User < ApplicationRecord
     deactivated_by_admin == false
   end
 
+  def check_validity
+    unless account_activated?
+      message = 'Account unactivated. Check your email for activation link'
+      raise ExceptionHandler::AuthenticationError, message
+    end
+
+    unless active
+      raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'
+    end
+  end
+
+  def owner
+    self
+  end
+
   private
 
   def self.digest(string)

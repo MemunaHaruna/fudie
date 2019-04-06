@@ -49,6 +49,10 @@ class Post < ApplicationRecord
     deactivated_by_admin == false
   end
 
+  def owner
+    user
+  end
+
   private
     def store(categories)
       categories.each {|id| save_post_category(id) }

@@ -47,7 +47,7 @@ class PostsController < ApplicationController
   end
 
   def update
-    if ((@post.user_id != current_user.id) && !@post.active)
+    if ((@post.user_id != current_user.id) || !@post.active)
       raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'
     end
 

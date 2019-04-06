@@ -15,18 +15,28 @@ class FlagsController < ApplicationController
   end
 
   def flagged_entity
-    if flag_type == "post"
-      @flagged = Post.find(params[:flagged_id].to_i)
-    elsif flag_type == "user"
-      @flagged = User.find(params[:flagged_id].to_i)
+    if flaggable_type == "post"
+      @flagged = Post.find(params[:flaggable_id].to_i)
+      check_validity(@flagged)
+    elsif flaggable_type == "user"
+      @flagged = User.find(params[:flaggable_id].to_i)
+      check_validity(@flagged)
     else
-      raise ActiveRecord::RecordInvalid, 'Unable to flag record type'
+      raise ExceptionHandler::InvalidParams, "Unable to flag record type"
     end
   end
 
-  def flag_type
-    flag_type = params[:flag_type].downcase
-    flag_type[0..4]
+  def flaggable_type
+    if !params[:flaggable_type]
+      raise ExceptionHandler::InvalidParams, "Flag type must be specified"
+    end
+    flaggable_type = params[:flaggable_type].downcase
+    flaggable_type[0..4]
   end
 
+  def check_validity(flagged)
+    if flagged.owner == current_user
+      raise ExceptionHandler::UnauthorizedUser, "You are not permitted to perform this action"
+    end
+  end
 end
