@@ -13,10 +13,10 @@ class User < ApplicationRecord
 
   # TODO: prevent this validation from running when a password isn't passed in params
   # validates :password, length: {:within => 6..40}
-
   validates_presence_of :password_digest
 
   enum role: %w[member admin]
+
   before_create :create_activation_digest
   before_save :downcase_email
 
@@ -24,11 +24,13 @@ class User < ApplicationRecord
   has_many :votes, dependent: :destroy
   has_many :bookmarks, dependent: :destroy
   has_many :thread_followings, class_name: 'ThreadFollowing', dependent: :destroy
-
   has_many :user_channels
   has_many :categories, through: :user_channels, dependent: :destroy
+  has_many :flags, as: :flaggable
 
   has_one_attached :avatar
+
+  scope :active, -> { where(deactivated_by_admin: false) }
 
   def authenticated?(attribute, token)
     digest = send("#{attribute}_digest")
@@ -65,6 +67,25 @@ class User < ApplicationRecord
     self.password_reset_token = nil
     self.password = password
     save!
+  end
+
+  def active
+    deactivated_by_admin == false
+  end
+
+  def check_validity
+    unless account_activated?
+      message = 'Account unactivated. Check your email for activation link'
+      raise ExceptionHandler::AuthenticationError, message
+    end
+
+    unless active
+      raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'
+    end
+  end
+
+  def owner
+    self
   end
 
   private

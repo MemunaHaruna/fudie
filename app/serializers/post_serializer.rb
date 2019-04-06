@@ -7,4 +7,8 @@ class PostSerializer < ActiveModel::Serializer
 
   has_many :votes
   has_many :bookmarks
+
+  attribute :active do
+    object.active
+  end
 end

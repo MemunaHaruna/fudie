@@ -5,6 +5,7 @@ class ApplicationController < ActionController::API
   include Response
 
   before_action :authorize_api_request
+  before_action :require_active_member
   attr_reader :current_user
 
   def authorize_api_request
@@ -13,6 +14,12 @@ class ApplicationController < ActionController::API
 
   def require_admin
     unless current_user.admin?
+      raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'
+    end
+  end
+
+  def require_active_member
+    unless current_user.active
       raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'
     end
   end

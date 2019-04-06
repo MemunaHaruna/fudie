@@ -7,6 +7,7 @@ module ExceptionHandler
   class PasswordMismatch < StandardError; end
   class UnauthorizedUser < StandardError; end
   class EmailNotSent < StandardError; end
+  class InvalidParams < StandardError; end
 
   included do
     rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
@@ -18,6 +19,7 @@ module ExceptionHandler
                 with: :password_not_matching_confirmation
     rescue_from ExceptionHandler::UnauthorizedUser, with: :unauthorized_request
     rescue_from ExceptionHandler::EmailNotSent, with: :email_not_sent
+    rescue_from ExceptionHandler::InvalidParams, with: :record_invalid
   end
 
   def record_invalid(error)

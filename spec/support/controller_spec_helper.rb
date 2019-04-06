@@ -44,4 +44,32 @@ module ControllerSpecHelper
       body: nil
     }
   end
+
+  def user_flag(flagger_id: , flaggable_id:)
+    {
+      reason: "whatever user",
+      flaggable_type: "User",
+      flaggable_id: flaggable_id,
+      flagger_id: flagger_id
+    }
+  end
+
+  def post_flag(flagger_id: , flaggable_id:)
+    {
+      reason: "whatever post",
+      flaggable_type: "Post",
+      flaggable_id: flaggable_id,
+      flagger_id: flagger_id
+    }
+  end
+
+  def invalid_flag(flagger_id: , flaggable_id:)
+    # unsupported flaggable type: course
+    {
+      reason: "unknown",
+      flaggable_type: "Course",
+      flaggable_id: flaggable_id,
+      flagger_id: flagger_id
+    }
+  end
 end

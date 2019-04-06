@@ -37,6 +37,10 @@ class UserSerializer < ActiveModel::Serializer
     object.avatar.filename if object.avatar.attached?
   end
 
+  attribute :active do
+    object.active
+  end
+
   private
 
   def is_current_user?(user = object)
