@@ -2,17 +2,23 @@ version: '3'
 services:
   db:
     image: postgres:9.6-alpine
+    container_name: postgres_db
     volumes:
       - ./tmp/db:/var/lib/postgresql/data
     env_file:
       - '.env'
+    ports:
+      - "19000:5432"
+
   web:
     build: .
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    container_name: fudie_api
     volumes:
       - .:/fudie-api-container
     ports:
-      - "3000:3000"
+      - "4000:4000"
+    expose:
+      - "4000"
     depends_on:
       - db
     env_file:
