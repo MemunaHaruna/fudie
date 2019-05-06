@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+ruby '2.4.1'
 
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
@@ -25,6 +26,7 @@ gem 'kaminari'
 
 gem 'simplecov', require: false, group: :test
 
+gem "aws-sdk-s3", require: false
 
 # for railties app_generator_test
 # gem "bootsnap", ">= 1.1.0", require: false
