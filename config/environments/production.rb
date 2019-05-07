@@ -47,15 +47,27 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
+  host_name = ENV['HOST_NAME'] || "#{ENV['HEROKU_APP_NAME']}.herokuapp.com"
+
   config.action_mailer.delivery_method        = :smtp
+  config.action_mailer.smtp_settings = {
+    address:              'smtp.gmail.com',
+    port:                 587,
+    domain:               host_name,
+    user_name:            ENV['SMTP_USERNAME'],
+    password:             ENV['SMTP_PASSWORD'],
+    authentication:       'plain',
+    enable_starttls_auto: true
+  }
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   config.action_mailer.perform_deliveries     = true
   config.action_mailer.raise_delivery_errors  = true
 
   # On production and staging, explicitly set the host name of the application
   # If one is not explicitly set, then use the default app name provided by heroku (this is for review apps)
-  host_name = ENV['HOST_NAME'] || "#{ENV['HEROKU_APP_NAME']}.herokuapp.com"
   config.action_mailer.default_url_options = {host: host_name, protocol: 'https'}
+  Rails.application.routes.default_url_options[:host]     = host_name
+  Rails.application.routes.default_url_options[:protocol] = 'https'
 
   # Mount Action Cable outside main process or domain
   # config.action_cable.mount_path = nil
