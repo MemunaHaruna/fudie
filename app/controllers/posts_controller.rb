@@ -34,7 +34,7 @@ class PostsController < ApplicationController
   end
 
   def create
-    @post = Post.new(post_params)
+    @post = current_user.posts.new(post_params)
 
     # logic for updating a post's depth
     @post.set_depth
@@ -74,7 +74,7 @@ class PostsController < ApplicationController
     end
 
     def post_params
-      params.permit(:title, :body, :user_id, :state, :parent_id)
+      params.permit(:title, :body, :state, :parent_id)
     end
 
     def post_update_params
