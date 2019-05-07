@@ -54,8 +54,8 @@ class UsersController < ApplicationController
   end
 
   def get_categories
-    ids = JSON.parse(params[:category_ids]) if params[:category_ids]
-    @categories = Category.where(id: ids)
+    # ids = JSON.parse(params[:category_ids]) if params[:category_ids] #temporarily remove this until needed
+    @categories = Category.where(id: params[:category_ids])
   end
 
   def set_user

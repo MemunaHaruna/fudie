@@ -107,7 +107,7 @@ RSpec.describe "Users API", type: :request do
   end
 
   describe "PUT /update" do
-    update_params = {first_name: 'marie', last_name: 'kondo', category_ids: "[2, 3]", bio: 'hello'}
+    update_params = {first_name: 'marie', last_name: 'kondo', category_ids: [2, 3], bio: 'hello'}
 
     context "when current user is updating their own profile" do
       before do
