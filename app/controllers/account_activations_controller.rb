@@ -1,5 +1,6 @@
 class AccountActivationsController < ApplicationController
   skip_before_action :authorize_api_request, only: :edit
+  skip_before_action :require_active_member, only: :edit
 
   def edit
     user = User.find_by(email: params[:email])
