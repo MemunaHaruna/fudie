@@ -17,7 +17,7 @@ class ThreadFollowingsController < ApplicationController
     end
 
     @thread_following.destroy
-    json_response(message: 'Successfully unsubscribed from thread')
+    json_basic_response(message: 'Successfully unsubscribed from thread')
   end
 
   def thread_params

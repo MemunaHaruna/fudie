@@ -37,7 +37,7 @@ class CategoriesController < ApplicationController
 
   def destroy
     @category.destroy
-    json_response(data: @category, message: 'Successfully deleted bookmark')
+    json_basic_response(message: 'Successfully deleted category.')
   end
 
   private

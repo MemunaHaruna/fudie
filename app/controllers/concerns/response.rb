@@ -18,4 +18,8 @@ module Response
     render json: data, show_children: show_children,
              meta: message, meta_key: :message, status: status
   end
+
+  def json_basic_response(message: 'Success', status: :ok)
+    render json: { message: message, errors: nil }, status: status
+  end
 end
