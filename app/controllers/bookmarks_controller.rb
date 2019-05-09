@@ -40,7 +40,7 @@ class BookmarksController < ApplicationController
     end
 
     @bookmark.destroy
-    json_response(data: @bookmark, message: 'Successfully deleted bookmark')
+    json_basic_response(message: 'Successfully deleted bookmark')
   end
 
   private

@@ -65,7 +65,7 @@ class PostsController < ApplicationController
     end
 
     @post.destroy
-    json_response(message: 'Post deleted successfully', status: :no_content)
+    json_basic_response(message: 'Post deleted successfully')
   end
 
   private

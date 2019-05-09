@@ -124,7 +124,7 @@ RSpec.describe "Post API", type: :request do
     context "when valid params" do
       it "deletes the post" do
         delete "/posts/#{new_post.id}", headers: headers
-        expect(response).to have_http_status(204)
+        expect(response).to have_http_status(200)
       end
     end
 
