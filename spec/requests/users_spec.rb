@@ -15,6 +15,11 @@ RSpec.describe "Users API", type: :request do
   let!(:member_post) { create(:post, user: user)}
   let!(:thread_following2) { create(:thread_following, user: user, post: member_post) }
 
+  let!(:category_1) {create(:category)}
+  let!(:category_2) {create(:category)}
+  let(:update_params) {{ first_name: 'marie', last_name: 'kondo',
+    category_ids: [category_1.id, category_2.id], bio: 'hello' }}
+
   describe "POST /signup" do
     context "when valid request" do
       before { post "/signup", params: valid_attributes.to_json, headers: headers }
@@ -107,30 +112,23 @@ RSpec.describe "Users API", type: :request do
   end
 
   describe "PUT /update" do
-    update_params = {first_name: 'marie', last_name: 'kondo', category_ids: [2, 3], bio: 'hello'}
-
     context "when current user is updating their own profile" do
-      before do
-        create_list(:category, 2)
-
-        put "/users/#{user.id}", headers: user_header , params: update_params.to_json
-      end
-
       it "updates successfully" do
+        put "/users/#{user.id}", headers: user_header , params: update_params.to_json
+
         expect(json[:user][:id]).to eq user.id
         expect(json[:user][:email]).to eq user.email
-        expect(json[:user][:bio]).to eq update_params[:bio]
-        expect(json[:user][:first_name]).to eq update_params[:first_name]
-        expect(json[:user][:last_name]).to eq update_params[:last_name]
+        expect(json[:user][:bio]).to eq 'hello'
+        expect(json[:user][:first_name]).to eq 'marie'
+        expect(json[:user][:last_name]).to eq 'kondo'
         expect(json[:user][:categories].count).to eq 2
-        expect(json[:user][:categories].first[:id]).to eq 2
-        expect(json[:user][:categories].last[:id]).to eq 3
-
       end
     end
 
     context "when current user attempts to update another user's profile" do
-      before { put "/users/#{admin_user.id}", headers: user_header, params: update_params.to_json}
+      before do
+        put "/users/#{admin_user.id}", headers: user_header, params: update_params.to_json
+      end
 
       it "returns an error" do
         expect(json[:message]).to eq "You are not authorized to perform this action"
