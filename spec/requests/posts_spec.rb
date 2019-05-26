@@ -110,11 +110,11 @@ RSpec.describe "Post API", type: :request do
     context "when invalid params" do
       context "when post does not exist" do
         it "returns an error" do
-          put "/posts/#{13}",
+          put "/posts/#{10013}",
               params: { title: "randooommmm" }.to_json, headers: headers
 
           expect(response).to have_http_status(404)
-          expect(json[:message]).to eq "Couldn't find Post with 'id'=13"
+          expect(json[:message]).to eq "Couldn't find Post with 'id'=10013"
         end
       end
     end
