@@ -21,19 +21,6 @@ class BookmarksController < ApplicationController
     end
   end
 
-  def update
-    if @bookmark.user_id != current_user.id
-      raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'
-    end
-
-    if @bookmark.update(bookmark_params)
-      json_response(data: @bookmark, message: 'Successfully updated bookmark')
-
-    else
-      json_error_response(errors: @bookmark.errors)
-    end
-  end
-
   def destroy
     if @bookmark.user_id != current_user.id
       raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'

@@ -1,6 +1,6 @@
 module Response
-  def json_error_response(message: "error", status: :unprocessable_entity, errors: nil)
-    render json: { message: message, errors: errors }, status: status
+  def json_error_response(message: "error", status: :unprocessable_entity, errors: "errors")
+    render json: { message: message, errors: errors}, status: status
   end
 
   def json_auth_response(token: nil, message: 'success', status: :ok)
