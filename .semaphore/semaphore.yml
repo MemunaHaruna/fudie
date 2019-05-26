@@ -87,7 +87,7 @@ blocks:
         commands:
           - bundle exec rspec spec/requests
 
-       - name: RSpec - auth tests
+      - name: RSpec - auth tests
         commands:
           - bundle exec rspec spec/lib
 
