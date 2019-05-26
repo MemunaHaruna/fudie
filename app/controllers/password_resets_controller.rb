@@ -14,6 +14,7 @@ class PasswordResetsController < ApplicationController
   end
 
   def edit
+    # validates password reset link
     check_if_email_is_present
     user = User.find_by(email: params[:email].downcase)
     check_if_user_exists(user)

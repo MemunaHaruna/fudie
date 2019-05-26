@@ -11,8 +11,8 @@ class User < ApplicationRecord
   validates :username, presence: true, length: { maximum: 255 },
                       uniqueness: { case_sensitive: false }
 
-  # TODO: prevent this validation from running when a password isn't passed in params
-  # validates :password, length: {:within => 6..40}
+  validates :password, length: { minimum: 6, maximum: 20 }, on: :create
+
   validates_presence_of :password_digest
 
   enum role: %w[member admin]
@@ -64,6 +64,9 @@ class User < ApplicationRecord
   end
 
   def reset_password!(password)
+    if password.length < 6 || password.length > 20
+      raise ExceptionHandler::InvalidParams, 'Password length must be between 6 and 20'
+    end
     self.password_reset_token = nil
     self.password = password
     save!
