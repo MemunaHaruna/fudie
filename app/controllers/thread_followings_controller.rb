@@ -2,7 +2,7 @@ class ThreadFollowingsController < ApplicationController
   before_action :set_thread_following, only: :destroy
 
   def create
-    thread = ThreadFollowing.create!(thread_params)
+    thread = current_user.thread_followings.create!(thread_params)
     json_response(status: :created,
       message: 'Successfully subscribed to thread',
       data: thread
@@ -21,7 +21,7 @@ class ThreadFollowingsController < ApplicationController
   end
 
   def thread_params
-    params.permit(:user_id, :post_id)
+    params.permit(:post_id)
   end
 
   def set_thread_following
