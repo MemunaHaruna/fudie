@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   skip_before_action :authorize_api_request, only: :create
   skip_before_action :require_active_member, only: :create
-  before_action :set_user, only: [:show, :update]
+  before_action :set_user, only: [:show, :update, :destroy, :recover]
   before_action :get_categories, only: :update
 
   def show
@@ -37,6 +37,20 @@ class UsersController < ApplicationController
     end
   end
 
+  def recover
+    validate_user
+
+    @user.recover
+    json_basic_response(message: 'User restored successfully.')
+  end
+
+  def destroy
+    validate_user
+
+    @user.soft_destroy
+    json_basic_response(message: 'User deleted successfully.')
+  end
+
   private
 
   def create_user_params
@@ -60,5 +74,19 @@ class UsersController < ApplicationController
 
   def set_user
     @user ||= User.find(params[:id])
+  end
+
+  def validate_user
+    if (!current_user? || deactivated?)
+      raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'
+    end
+  end
+
+  def current_user?
+    @user.id == current_user.id
+  end
+
+  def deactivated?
+    current_user.deactivated_by_admin?
   end
 end

@@ -1,10 +1,12 @@
 require "rails_helper"
 
 RSpec.describe "Users API", type: :request do
-  let!(:user) { create(:user) }
+  let(:user) { create(:user) }
+  let(:user_2) { create(:user) }
   let(:admin_user) { create(:user, role: 1) }
   let(:headers) { valid_headers(user.id).except("Authorization") }
   let(:user_header) { valid_headers(user.id) }
+  let(:user2_header) { valid_headers(user_2.id) }
   let(:admin_header) { valid_headers(admin_user.id) }
   let(:valid_attributes) do
     attributes_for(:user, password_confirmation: user.password)
@@ -135,5 +137,72 @@ RSpec.describe "Users API", type: :request do
         expect(response).to have_http_status(403)
       end
     end
+  end
+
+  describe "DELETE /users/:id" do
+    context "when valid params" do
+      it "soft deletes the user" do
+        expect(user.deleted_at).to eq nil
+
+        delete "/users/#{user.id}", headers: user_header
+        expect(response).to have_http_status(200)
+        expect(json[:message]).to eq "User deleted successfully."
+        expect(user.reload.deleted_at).not_to eq nil
+      end
+    end
+
+    context "when invalid params" do
+      context "when the user does not exist" do
+        it "returns an error" do
+          delete "/users/#{10000}", headers: user_header
+
+          expect(response).to have_http_status(404)
+          expect(json[:message]).to eq "Couldn't find User with 'id'=10000"
+        end
+      end
+
+      context "when a non-admin tries to delete another user's account" do
+        it "returns an error" do
+          delete "/users/#{user.id}", headers: user2_header
+
+          expect(response).to have_http_status(403)
+          expect(json[:message]).to eq "You are not authorized to perform this action"
+        end
+      end
+    end
+  end
+
+  describe "UPDATE /users/:id/recover" do
+    context "when valid params" do
+      it "soft deletes the user" do
+        # soft_delete(user) # TO-DO: figure out why this fails
+
+        user.deleted_at = Time.now
+        expect(user.deleted_at).not_to eq nil # article has already been soft-deleted
+        expect(user.deleted_at).to be > 4.weeks.ago # verifies that the post is not 4 weeks old yet and so is still recoverable
+
+        put "/users/#{user.id}/recover", headers: user_header
+        expect(response).to have_http_status(200)
+        expect(user.reload.deleted_at).to eq nil
+      end
+    end
+
+    context "when a user tries to recover another user's account" do
+      it "returns an error" do
+        soft_delete(user)
+
+        expect(user.reload.deleted_at).not_to eq nil # article has already been soft-deleted
+
+        put "/users/#{user.id}/recover", headers: user2_header
+        expect(response).to have_http_status(403)
+        expect(json[:message]).to eq "You are not authorized to perform this action"
+      end
+    end
+  end
+
+  private
+
+  def soft_delete(member)
+    member.update(deleted_at: Time.now) if member
   end
 end

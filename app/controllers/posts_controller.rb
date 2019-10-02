@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: [:show, :update, :destroy]
+  before_action :set_post, only: [:show, :update, :destroy, :recover]
 
   def index
     posts = Post.posts_only.published.active
@@ -60,12 +60,21 @@ class PostsController < ApplicationController
   end
 
   def destroy
-    if @post.user_id != current_user.id
+    if (@post.user_id != current_user.id || @post.deactivated_by_admin)
       raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'
     end
 
-    @post.destroy
-    json_basic_response(message: 'Post deleted successfully')
+    @post.soft_destroy
+    json_basic_response(message: 'Post deleted successfully.')
+  end
+
+  def recover
+    if (@post.user_id != current_user.id || @post.deactivated_by_admin)
+      raise ExceptionHandler::UnauthorizedUser, 'You are not authorized to perform this action'
+    end
+
+    @post.recover
+    json_basic_response(message: 'Post restored successfully.')
   end
 
   private

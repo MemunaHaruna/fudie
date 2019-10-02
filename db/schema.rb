@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_01_115210) do
+ActiveRecord::Schema.define(version: 2019_09_18_092728) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,6 +73,7 @@ ActiveRecord::Schema.define(version: 2019_04_01_115210) do
     t.integer "depth", default: 0, null: false
     t.bigint "parent_id"
     t.boolean "deactivated_by_admin", default: false, null: false
+    t.datetime "deleted_at"
     t.index ["parent_id"], name: "index_posts_on_parent_id"
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
@@ -120,6 +121,7 @@ ActiveRecord::Schema.define(version: 2019_04_01_115210) do
     t.datetime "password_reset_sent_at"
     t.text "bio"
     t.boolean "deactivated_by_admin", default: false, null: false
+    t.datetime "deleted_at"
     t.index ["email"], name: "index_users_on_email"
     t.index ["username"], name: "index_users_on_username"
   end

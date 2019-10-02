@@ -1,4 +1,6 @@
 class Post < ApplicationRecord
+  include Recoverable
+
   validates_presence_of :title, :body
   validates_uniqueness_of :title, scope: :user_id
   validates :depth, numericality: { less_than_or_equal_to: 2, only_integer: true }
@@ -17,8 +19,9 @@ class Post < ApplicationRecord
   has_many :categories, through: :posts_categories, dependent: :destroy
   has_many :flags, as: :flaggable
 
+  scope :active, -> { where(deactivated_by_admin: false, deleted_at: nil) }
   scope :posts_only, -> { where(parent_id: nil) } # posts only, not comments
-  scope :active, -> { where(deactivated_by_admin: false) }
+  scope :only_soft_deleted, -> { where.not(deleted_at: nil)}
 
   def set_depth
     if parent
@@ -46,7 +49,7 @@ class Post < ApplicationRecord
   end
 
   def active
-    deactivated_by_admin == false
+    deactivated_by_admin == false && deleted_at.nil?
   end
 
   def owner
