@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include Recoverable
+
   has_secure_password
   attr_accessor :account_activation_token, :password_reset_token
 
@@ -30,7 +32,9 @@ class User < ApplicationRecord
 
   has_one_attached :avatar
 
-  scope :active, -> { where(deactivated_by_admin: false) }
+  scope :active, -> { where(deactivated_by_admin: false, deleted_at: nil) }
+  scope :deactivated_by_admin?, -> { where(deactivated_by_admin: true) }
+  scope :only_soft_deleted, -> { where.not(deleted_at: nil)}
 
   def authenticated?(attribute, token)
     digest = send("#{attribute}_digest")
@@ -73,7 +77,7 @@ class User < ApplicationRecord
   end
 
   def active
-    deactivated_by_admin == false
+    deactivated_by_admin == false && deleted_at == nil
   end
 
   def check_validity

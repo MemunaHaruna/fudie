@@ -122,9 +122,12 @@ RSpec.describe "Post API", type: :request do
 
   describe "DELETE /posts/:id" do
     context "when valid params" do
-      it "deletes the post" do
+      it "soft deletes the post" do
+        expect(new_post.deleted_at).to eq nil
+
         delete "/posts/#{new_post.id}", headers: headers
         expect(response).to have_http_status(200)
+        expect(new_post.reload.deleted_at).not_to eq nil
       end
     end
 
@@ -148,5 +151,38 @@ RSpec.describe "Post API", type: :request do
         end
       end
     end
+  end
+
+  describe "UPDATE /posts/:id/recover" do
+    context "when valid params" do
+      it "recovers the deleted post" do
+        soft_delete(new_post)
+        new_post.reload
+
+        expect(new_post.deleted_at).not_to eq nil
+        expect(new_post.deleted_at).to be > 4.weeks.ago # verifies that the post is not 4 weeks old yet and so is still recoverable
+
+        put "/posts/#{new_post.id}/recover", headers: headers
+        expect(new_post.reload.deleted_at).to eq nil
+      end
+    end
+
+    context "when the post belongs to another user" do
+      it "returns an error" do
+        soft_delete(post_2)
+
+        expect(post_2.reload.deleted_at).not_to eq nil # article has already been soft-deleted
+
+        put "/posts/#{post_2.id}/recover", headers: headers
+        expect(response).to have_http_status(403)
+        expect(json[:message]).to eq "You are not authorized to perform this action"
+      end
+    end
+  end
+
+  private
+
+  def soft_delete(article)
+    article.update(deleted_at: Time.now) if article
   end
 end

@@ -1,5 +1,5 @@
 class PostSerializer < ActiveModel::Serializer
-  attributes :id, :title, :body, :state, :depth, :parent_id
+  attributes :id, :title, :body, :state, :depth, :parent_id, :deleted_at
 
   belongs_to :user
   has_many :comments
