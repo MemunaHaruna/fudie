@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   skip_before_action :authorize_api_request, only: :create
-  skip_before_action :require_active_member, only: :create
+  skip_before_action :require_active_member, only: %i[create recover]
   before_action :set_user, only: [:show, :update, :destroy, :recover]
   before_action :get_categories, only: :update
 

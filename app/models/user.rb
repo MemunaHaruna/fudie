@@ -33,6 +33,7 @@ class User < ApplicationRecord
   has_one_attached :avatar
 
   scope :active, -> { where(deactivated_by_admin: false, deleted_at: nil) }
+  scope :deactivated_by_admin?, -> { where(deactivated_by_admin: true) }
   scope :only_soft_deleted, -> { where.not(deleted_at: nil)}
 
   def authenticated?(attribute, token)
