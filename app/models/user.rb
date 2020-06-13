@@ -36,6 +36,8 @@ class User < ApplicationRecord
   scope :deactivated_by_admin?, -> { where(deactivated_by_admin: true) }
   scope :only_soft_deleted, -> { where.not(deleted_at: nil)}
 
+  update_index('posts#post') { posts }
+
   def authenticated?(attribute, token)
     digest = send("#{attribute}_digest")
     return false if digest.nil?

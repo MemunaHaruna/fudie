@@ -1,0 +1,9 @@
+# separate environment configs
+
+development:
+  host: 'localhost:9200'
+  journal: true
+  journal_name: my_super_journal
+test:
+  host: 'localhost:9250'
+  prefix: 'test'

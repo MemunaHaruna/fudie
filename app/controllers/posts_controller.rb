@@ -1,10 +1,14 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :update, :destroy, :recover]
+  # around_action { |&block| Chewy.atomic(&block) }
 
   def index
-    posts = Post.posts_only.published.active
+    posts = PostsIndex.query(match: { title: params[:query] })
+    # binding.pry
+    # posts = Post.posts_only.published.active
     posts = posts.page(params[:page]).per(params[:per_page] || 10)
-    json_response(status: :ok, data: posts)
+    render json: { posts: posts }, status: :ok
+    # json_response(status: :ok, data: posts)
   end
 
   def public_posts_per_user

@@ -1,5 +1,6 @@
 class Post < ApplicationRecord
   include Recoverable
+  update_index('posts#post') { self }
 
   validates_presence_of :title, :body
   validates_uniqueness_of :title, scope: :user_id
