@@ -10,7 +10,8 @@ module Recoverable
   def destroy_fully
     self.destroy if self.deleted_at <= 4.weeks.ago
 
-    # < == older than
-    # > == earlier than
+    # < == older than (a < b means a comes before b)
+    # > == earlier than (a > b means a comes after b)
   end
 end
+
