@@ -82,6 +82,7 @@ test:
 #
 production:
   <<: *default
-  database: fudie-api_production
-  username: fudie-api
-  password: <%= ENV['FUDIE-API_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
+  # database: fudie-api_production
+  # username: fudie-api
+  # password: <%= ENV['FUDIE-API_DATABASE_PASSWORD'] %>
