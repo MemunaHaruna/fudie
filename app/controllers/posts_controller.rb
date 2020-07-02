@@ -2,7 +2,9 @@ class PostsController < ApplicationController
   before_action :set_post, only: [:show, :update, :destroy, :recover]
 
   def index
-    posts = Post.posts_only.published.active
+    # binding.pry
+    options = { state: 1 }
+    posts = Post.posts_only.active.search(search_params[:query], options).records
     posts = posts.page(params[:page]).per(params[:per_page] || 10)
     json_response(status: :ok, data: posts)
   end
@@ -88,5 +90,9 @@ class PostsController < ApplicationController
 
     def post_update_params
       params.permit(:title, :body, :state)
+    end
+
+    def search_params
+      params.permit(:query)
     end
 end
