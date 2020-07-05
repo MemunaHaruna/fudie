@@ -2,25 +2,31 @@ class PostsController < ApplicationController
   before_action :set_post, only: [:show, :update, :destroy, :recover]
 
   def index
-    posts = Post.posts_only.published.active
+    posts = Post.search(search_params[:query], filter_options).records
     posts = posts.page(params[:page]).per(params[:per_page] || 10)
     json_response(status: :ok, data: posts)
   end
 
   def public_posts_per_user
-    posts = Post.where(user_id: params[:user_id]).posts_only.published.active
+    options = filter_options.merge(user_id: params[:id])
+
+    posts = Post.search(search_params[:query], options).records
     posts = posts.page(params[:page]).per(params[:per_page] || 10)
     json_response(status: :ok, data: posts)
   end
 
   def drafts
-    posts = current_user.posts.posts_only.draft.active
+    options = filter_options.merge(state: 'draft', user_id: current_user.id)
+
+    posts = Post.search(search_params[:query], options).records
     posts = posts.page(params[:page]).per(params[:per_page] || 10)
     json_response(status: :ok, data: posts)
   end
 
   def hidden
-    posts = current_user.posts.posts_only.hidden.active
+    options = filter_options.merge(state: 'hidden', user_id: current_user.id)
+
+    posts = Post.search(search_params[:query], options).records
     posts = posts.page(params[:page]).per(params[:per_page] || 10)
     json_response(status: :ok, data: posts)
   end
@@ -88,5 +94,13 @@ class PostsController < ApplicationController
 
     def post_update_params
       params.permit(:title, :body, :state)
+    end
+
+    def search_params
+      params.permit(:query)
+    end
+
+    def filter_options
+      { state: 'published', posts_only: true, active: true }
     end
 end
