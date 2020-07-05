@@ -108,6 +108,9 @@ RSpec.configure do |config|
 =end
 
   if !ENV['CI']
+    # https://medium.com/@rowanoulton/testing-elasticsearch-in-rails-22a3296d989
+    # https://medium.flatstack.com/one-of-our-projects-contains-elasticsearch-as-a-fulltext-search-engine-c660a28246fe
+
     # Start an in-memory cluster for Elasticsearch as needed
     config.before :all, elasticsearch: true do
       Elasticsearch::Extensions::Test::Cluster.start(port: 9250, nodes: 1, timeout: 120) unless Elasticsearch::Extensions::Test::Cluster.running?(on: 9250)
