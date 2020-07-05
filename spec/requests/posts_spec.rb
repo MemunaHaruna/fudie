@@ -15,6 +15,9 @@ RSpec.describe "Post API", type: :request do
   before do
     user.activate
     user_2.activate
+
+    Post.import(force: true)
+    Post.__elasticsearch__.refresh_index!
   end
 
   describe "POST /posts" do
@@ -69,8 +72,6 @@ RSpec.describe "Post API", type: :request do
     context "when admin user" do
       it "returns the user's posts and other user's published posts" do
         get "/posts", headers: headers
-
-        # binding.pry
 
         expect(json[:posts].first[:title]).to eq new_post[:title]
         expect(json[:posts].first[:state]).to eq new_post[:state]

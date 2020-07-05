@@ -30,7 +30,6 @@ module Searchable
       end
 
       @search_definition = {
-        size: 5,
         query: {
           bool: {
             must: [],

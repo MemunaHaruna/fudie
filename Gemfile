@@ -24,6 +24,7 @@ gem 'kaminari'
 
 gem 'elasticsearch-model'
 gem 'elasticsearch-rails'
+gem 'elasticsearch-extensions'
 
 gem 'jwt'
 gem 'active_model_serializers', '~> 0.10.0'
