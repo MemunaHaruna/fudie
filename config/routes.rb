@@ -12,16 +12,13 @@ Rails.application.routes.draw do
   resources :categories
   resources :bookmarks
   resources :votes
-  # get 'posts/drafts', to: 'posts#drafts'
-  # get 'posts/hidden', to: 'posts#hidden'
-  # get 'users/:user_id/published-posts', to: 'posts#public_posts_per_user'
 
   resources :posts do
     get 'drafts', on: :collection
     get 'hidden', on: :collection
+    put 'recover', to: 'posts#recover', on: :member
 
     resources :votes, only: [:create, :update]
-    put 'recover', to: 'posts#recover', on: :member
   end
   post 'signup', to: 'users#create'
   post 'signin', to: 'authentication#signin'
