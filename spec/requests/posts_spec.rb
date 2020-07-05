@@ -70,6 +70,8 @@ RSpec.describe "Post API", type: :request do
       it "returns the user's posts and other user's published posts" do
         get "/posts", headers: headers
 
+        # binding.pry
+
         expect(json[:posts].first[:title]).to eq new_post[:title]
         expect(json[:posts].first[:state]).to eq new_post[:state]
         expect(response).to have_http_status(200)
