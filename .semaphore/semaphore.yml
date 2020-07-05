@@ -75,6 +75,7 @@ blocks:
           - sem-version ruby 2.4.1
           - bundle install --deployment --path vendor/bundle
           - RAILS_ENV=test bundle exec rake db:setup
+          - sem-service start elasticsearch 7.8.0
 
       jobs:
       - name: RSpec - model tests
