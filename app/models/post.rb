@@ -1,5 +1,4 @@
 class Post < ApplicationRecord
-  include Searchable
   include Recoverable
 
   validates_presence_of :title, :body
