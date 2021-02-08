@@ -27,7 +27,7 @@ jobs:
         with:
           ruby-version: 2.6
 
-      - name: Install PostgreSQL 12 client
+      - name: Install PostgreSQL 11 client
         run: |
           sudo apt-get -yqq install libpq-dev
 
@@ -38,7 +38,6 @@ jobs:
 
       - name: Run Tests
         env:
-          PG_DATABASE: postgres
           PG_HOST: 127.0.0.1
           PG_USER: postgres
           PG_PASSWORD: password

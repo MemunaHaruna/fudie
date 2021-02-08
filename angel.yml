@@ -1,0 +1,9 @@
+development: &default
+  url: 'https://development-url.foo'
+  username: development_user
+  password: development_password
+
+test:
+  url: 'https://test-url.foo'
+  username: test_user
+  password: test_password
