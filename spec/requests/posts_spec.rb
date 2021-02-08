@@ -15,9 +15,6 @@ RSpec.describe "Post API", type: :request do
   before do
     user.activate
     user_2.activate
-
-    Post.import(force: true)
-    Post.__elasticsearch__.refresh_index!
   end
 
   describe "POST /posts" do

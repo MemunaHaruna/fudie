@@ -18,7 +18,7 @@ RSpec.describe "Users API", type: :request do
   let!(:thread_following2) { create(:thread_following, user: user, post: member_post) }
 
   let!(:category_1) {create(:category)}
-  let!(:category_2) {create(:category)}
+  let(:category_2) {create(:category)}
   let(:update_params) {{ first_name: 'marie', last_name: 'kondo',
     category_ids: [category_1.id, category_2.id], bio: 'hello' }}
 

@@ -22,10 +22,6 @@ gem 'puma', '~> 3.7'
 gem 'bcrypt', '~> 3.1.7'
 gem 'kaminari'
 
-gem 'elasticsearch-model'
-gem 'elasticsearch-rails'
-gem 'elasticsearch-extensions'
-
 gem 'jwt'
 gem 'active_model_serializers', '~> 0.10.0'
 
