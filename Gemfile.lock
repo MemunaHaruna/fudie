@@ -122,7 +122,7 @@ GEM
     hashie (4.1.0)
     i18n (1.8.3)
       concurrent-ruby (~> 1.0)
-    jmespath (1.4.0)
+    jmespath (1.6.1)
     jsonapi-renderer (0.2.2)
     jwt (2.2.1)
     kaminari (1.2.1)
